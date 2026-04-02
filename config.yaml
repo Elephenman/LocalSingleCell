@@ -1,0 +1,171 @@
+# =============================================================================
+# LocalSingleCell 全局配置文件
+# =============================================================================
+
+# 全局配置
+random_seed: 42
+
+# =============================================================================
+# 性能优化配置
+# =============================================================================
+performance:
+  # 自动降采样设置
+  auto_downsample:
+    enabled: true
+    max_cells: 10000        # 最大细胞数，超过则提示降采样
+    max_genes: 20000        # 最大基因数，超过则提示降采样
+    suggest_only: false      # false=自动执行降采样，true=仅给出建议
+
+  # 内存优化设置
+  memory:
+    gc_threshold_percent: 80  # 内存使用率阈值（%），超过时启动GC
+    enable_cache: true        # 是否启用缓存机制
+    cache_dir: "temp/cache"   # 缓存目录
+
+  # 并行处理设置
+  parallel:
+    enabled: true
+    n_jobs: -1                # -1=使用所有CPU核心
+
+  # 性能监控设置
+  monitoring:
+    enabled: true             # 是否启用性能监控
+    log_memory: true          # 是否记录内存使用
+    log_timing: true          # 是否记录耗时
+    alert_memory_percent: 85  # 内存使用告警阈值（%）
+    output_dir: "logs/performance"  # 性能日志输出目录
+
+# =============================================================================
+# 日志配置
+# =============================================================================
+logging:
+  level: "INFO"               # 日志级别：DEBUG, INFO, WARNING, ERROR
+  file_path: "logs/app.log"   # 日志文件路径
+  max_bytes: 10485760         # 单个日志文件最大大小（10MB）
+  backup_count: 7              # 保留的日志文件数量
+  console_output: true         # 是否同时输出到控制台
+
+# =============================================================================
+# UI配置
+# =============================================================================
+ui:
+  theme: "light"               # 主题：light, dark
+  language: "zh-CN"            # 语言：zh-CN（中文）, en（英文）
+  show_welcome: true            # 是否显示欢迎页面
+  enable_tooltips: true         # 是否启用工具提示
+
+# =============================================================================
+# 批量处理配置
+# =============================================================================
+batch_processing:
+  enabled: true
+  max_concurrent_samples: 3    # 最大并发处理样本数
+  output_dir: "batch_results"  # 批量处理结果输出目录
+
+# =============================================================================
+# 质控过滤默认参数
+# =============================================================================
+qc:
+  gene_filter:
+    min_cells: 3
+    apply: true
+  cell_filter:
+    min_genes: 200
+    max_genes: 6000
+    min_umi: 500
+    max_umi: 20000
+  mitochondrial:
+    prefix: "MT-"
+    max_percent: 20
+    apply: true
+  ribosomal:
+    prefix: "RP[SL]"
+    max_percent: 50
+    apply: false
+
+# 归一化、高变基因筛选默认参数
+normalization:
+  method: "scanpy"
+  target_sum: 10000
+  hvg:
+    apply: true
+    method: "seurat_v3"
+    n_top_genes: 2000
+  scaling:
+    apply: true
+    max_value: 10
+
+# 降维默认参数
+dimension_reduction:
+  pca:
+    n_comps: 50
+    use_hvg: true
+  umap:
+    apply: true
+    n_neighbors: 15
+    min_dist: 0.5
+  tsne:
+    apply: false
+    perplexity: 30
+
+# 聚类默认参数
+clustering:
+  n_pcs: 30
+  n_neighbors: 15
+  method: "leiden"
+  resolution: 0.5
+
+# 差异分析默认参数
+differential:
+  apply: true
+  method: "wilcoxon"
+  p_adjust_cutoff: 0.05
+  log2fc_min: 0.25
+  min_pct: 0.25
+
+# 富集分析默认参数
+enrichment:
+  databases: ["GO_BP", "KEGG"]
+  p_adjust_cutoff: 0.05
+  min_gene_count: 3
+  top_terms: 10
+
+# 可视化默认参数
+visualization:
+  dpi: 300
+  figsize: [10, 8]
+  color_palette: "viridis"
+  font_size: 12
+  format: "png"
+
+# 空间转录组分析默认参数
+spatial:
+  apply: true
+  coord_type: "grid"
+  n_rings: 1
+  delaunay: false
+  spatial_variable_genes:
+    apply: true
+    mode: "moran"
+  colocalization:
+    apply: true
+    n_splits: 1
+  ligand_receptor:
+    apply: false
+  visualization:
+    spot_size: null
+    alpha: 1.0
+    img_alpha: 0.5
+    image_key: "hires"
+
+# AI自然语言分析配置
+ai_analysis:
+  enabled: true
+  use_ollama: false
+  ollama:
+    model: "qwen2:7b"
+    base_url: "http://localhost:11434"
+    timeout: 60
+  parser:
+    enable_rule_based: true
+    enable_llm: false

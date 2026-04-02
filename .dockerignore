@@ -1,0 +1,69 @@
+# =============================================================================
+# .dockerignore - Docker构建忽略文件
+# =============================================================================
+
+# Python缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# 虚拟环境
+.venv
+env/
+venv/
+ENV/
+
+# IDE配置文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 日志文件
+logs/*.log
+logs/
+
+# 临时文件
+temp/
+*.tmp
+*.bak
+
+# 示例数据（可在容器中重新生成）
+sample_data/
+
+# Git文件
+.git/
+.gitignore
+.gitattributes
+
+# 文档（如需可移除）
+*.md
+!README.md
+
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Trae IDE配置
+.trae/
