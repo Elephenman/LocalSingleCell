@@ -41,7 +41,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel
-          pip install -r requirements.txt
+          # 强制使用预编译wheel，避免从源码构建时缺少pkg_resources
+          pip install --prefer-binary -r requirements.txt
           pip install pytest pytest-cov
 
       - name: Run tests
