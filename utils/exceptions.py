@@ -59,8 +59,8 @@ class DataLoadError(LocalSingleCellError):
     default_message = "数据加载失败"
 
 
-class FileNotFoundError(DataLoadError):
-    """文件未找到错误"""
+class DataFileNotFoundError(DataLoadError):
+    """数据文件未找到错误"""
     error_code = "E101"
     default_message = "文件不存在，请检查文件路径"
 
@@ -306,8 +306,10 @@ def create_exception_from_error(original_error: Exception, context: str = "") ->
     error_message = str(original_error)
 
     # 映射标准异常到自定义异常
+    # 注意：使用 builtins.FileNotFoundError 引用内置异常，避免与自定义异常混淆
+    import builtins
     exception_map = {
-        FileNotFoundError: FileNotFoundError,
+        builtins.FileNotFoundError: DataFileNotFoundError,
         PermissionError: DataLoadError,
         MemoryError: MemoryLimitError,
         ValueError: ValidationError,
