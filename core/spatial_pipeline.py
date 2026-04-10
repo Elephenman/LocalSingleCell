@@ -176,8 +176,9 @@ def run_spatial_pipeline(adata, config, progress_callback: Optional[Callable[[in
 
         # 配体-受体分析
         if config['spatial']['ligand_receptor']['apply']:
-            # 这里需要配体-受体数据库，暂时跳过
-            pass
+            # TODO: 配体-受体分析需要外部数据库支持，功能开发中
+            import logging
+            logging.warning("配体-受体分析功能开发中，暂跳过")
 
     # 8. 差异基因分析 (95-100%)
     if config['differential']['apply']:
