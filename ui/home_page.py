@@ -3,131 +3,190 @@ import streamlit as st
 
 def show():
     """
-    首页欢迎页面
+    首页 - 卡片式6个核心入口
     """
+    # 页面标题
     st.title("🔬 LocalSingleCell")
     st.subheader("本地化单细胞&空间转录组分析工具")
     
     st.markdown("---")
     
-    # 功能介绍卡片
-    col1, col2, col3 = st.columns(3)
+    # ========================================
+    # 6个核心入口卡片
+    # ========================================
     
-    with col1:
-        st.markdown("### 📊 单细胞分析")
-        st.markdown("""
-        - 数据质控与过滤
-        - 降维与聚类分析
-        - 差异基因分析
-        - 基因富集分析
-        """)
+    # 定义6个核心入口
+    entries = [
+        {
+            "icon": "🏠",
+            "title": "首页",
+            "description": "欢迎页 + 快速开始向导",
+            "page": "首页",
+            "color": "#134273"
+        },
+        {
+            "icon": "📁",
+            "title": "数据管理",
+            "description": "数据导入 + 当前数据状态",
+            "page": "数据导入",
+            "color": "#1a5a96"
+        },
+        {
+            "icon": "🔬",
+            "title": "分析工具",
+            "description": "一站式分析配置",
+            "page": "分析工具",
+            "color": "#2d8cf0"
+        },
+        {
+            "icon": "📊",
+            "title": "结果查看",
+            "description": "可视化展示",
+            "page": "结果查看",
+            "color": "#28a745"
+        },
+        {
+            "icon": "💾",
+            "title": "导出",
+            "description": "数据导出与报告生成",
+            "page": "结果导出",
+            "color": "#ffc107"
+        },
+        {
+            "icon": "❓",
+            "title": "帮助",
+            "description": "使用指南与FAQ",
+            "page": "帮助文档",
+            "color": "#17a2b8"
+        }
+    ]
     
-    with col2:
-        st.markdown("### 🗺️ 空间转录组")
-        st.markdown("""
-        - 空间数据导入
-        - 空间可变基因
-        - 空间可视化
-        - 配体-受体分析
-        """)
+    # 渲染6个卡片 (3x2 网格)
+    cols = st.columns(3)
     
-    with col3:
-        st.markdown("### 🤖 AI自然语言")
+    for idx, entry in enumerate(entries):
+        col = cols[idx % 3]
+        
+        with col:
+            # 卡片容器 - 使用 HTML 实现自定义样式
+            card_html = f"""
+            <div class="entry-card" style="background: linear-gradient(135deg, {entry['color']}, {entry['color']}dd);">
+                <div class="entry-card-icon">{entry['icon']}</div>
+                <h3 style="color: white !important; margin-bottom: 8px; font-size: 1.3rem;">{entry['title']}</h3>
+                <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 14px; line-height: 1.5;">{entry['description']}</p>
+            </div>
+            """
+            st.markdown(card_html, unsafe_allow_html=True)
+            
+            # 按钮触发跳转
+            if st.button(f"进入{entry['title']}", key=f"btn_{entry['page']}", use_container_width=True):
+                st.session_state.page = entry['page']
+                st.rerun()
+    
+    st.markdown("---")
+    
+    # ========================================
+    # 当前数据状态展示
+    # ========================================
+    
+    # 检查是否有数据加载
+    if st.session_state.get('is_data_loaded', False):
+        st.success("✅ 已加载数据")
+        
+        # 显示数据基本信息
+        data_col1, data_col2, data_col3, data_col4 = st.columns(4)
+        
+        anndata_obj = st.session_state.get('anndata_obj')
+        
+        with data_col1:
+            if anndata_obj is not None:
+                st.metric("细胞数", f"{anndata_obj.n_obs:,}")
+        
+        with data_col2:
+            if anndata_obj is not None:
+                st.metric("基因数", f"{anndata_obj.n_vars:,}")
+        
+        with data_col3:
+            if anndata_obj is not None:
+                st.metric("细胞类型数", f"{len(anndata_obj.obs.get('cell_type', []).unique()) if 'cell_type' in anndata_obj.obs else 'N/A'}")
+        
+        with data_col4:
+            if anndata_obj is not None:
+                st.metric("样本数", f"{len(anndata_obj.obs.get('sample', []).unique()) if 'sample' in anndata_obj.obs else 'N/A'}")
+        
+        # 数据类型标识
+        is_spatial = st.session_state.get('is_spatial_data', False)
+        if is_spatial:
+            st.info("🗺️ 当前数据：空间转录组数据")
+        else:
+            st.info("🧬 当前数据：单细胞转录组数据")
+    else:
+        st.info("💡 欢迎使用 LocalSingleCell！请先导入数据开始分析。")
+    
+    st.markdown("---")
+    
+    # ========================================
+    # 快速开始指南 (可折叠)
+    # ========================================
+    
+    with st.expander("📖 快速开始指南", expanded=False):
         st.markdown("""
-        - 自然语言需求解析
-        - 智能参数配置
-        - 一键分析执行
-        - 友好的交互体验
+        ### 1. 导入数据
+        点击上方的「📁 数据管理」卡片，进入数据导入页面：
+        - 📁 本地h5ad文件导入
+        - 📂 10x单细胞标准输出导入
+        - 🔗 SRA号数据下载
+        - 🧬 空间转录组数据导入
+        
+        ### 2. 配置分析
+        点击「🔬 分析工具」卡片：
+        - 调整质控、归一化、降维等参数
+        - 使用AI自然语言描述需求
+        - 一键执行分析
+        
+        ### 3. 查看结果
+        点击「📊 结果查看」卡片：
+        - UMAP/tSNE降维图
+        - 细胞聚类图
+        - 标记基因表达图
+        
+        ### 4. 导出结果
+        点击「💾 导出」卡片：
+        - 选择要导出的内容
+        - 一键打包下载
         """)
     
     st.markdown("---")
     
-    # 快速开始指南
-    st.markdown("## 🚀 快速开始")
+    # ========================================
+    # 技术栈信息
+    # ========================================
     
-    st.markdown("### 1. 导入数据")
-    st.info("点击左侧导航栏「🏠 数据导入」，选择合适的数据导入方式：")
-    st.markdown("- 📁 本地h5ad文件导入")
-    st.markdown("- 📂 10x单细胞标准输出导入")
-    st.markdown("- 🔗 SRA号数据下载")
-    st.markdown("- 🧬 空间转录组数据导入")
-    
-    st.markdown("### 2. 配置分析参数")
-    st.info("数据导入成功后，进入「⚙️ 分析流程配置」页面：")
-    st.markdown("- 调整质控、归一化、降维等参数")
-    st.markdown("- 预览质控结果")
-    st.markdown("- 执行一键分析")
-    
-    st.markdown("### 3. 查看可视化结果")
-    st.info("分析完成后，在「📊 结果可视化」页面查看图表：")
-    st.markdown("- UMAP/tSNE降维图")
-    st.markdown("- 细胞聚类图")
-    st.markdown("- 标记基因表达图")
-    st.markdown("- 火山图等差异基因可视化")
-    
-    st.markdown("### 4. 进行基因富集分析")
-    st.info("在「🔬 基因富集分析」页面：")
-    st.markdown("- 选择差异基因集")
-    st.markdown("- 选择富集数据库（GO、KEGG、Reactome）")
-    st.markdown("- 查看富集结果和气泡图")
-    
-    st.markdown("### 5. 导出分析结果")
-    st.info("在「💾 结果导出」页面：")
-    st.markdown("- 选择要导出的内容")
-    st.markdown("- 一键打包下载")
-    st.markdown("- 保存分析报告")
-    
-    st.markdown("---")
-    
-    # AI自然语言分析介绍
-    st.markdown("## 🤖 使用AI自然语言分析")
-    st.success("不想手动配置参数？试试AI自然语言分析！")
-    st.markdown("""
-    1. 导入数据后，进入「🤖 AI自然语言分析」页面
-    2. 用中文描述你的分析需求，例如：
-       - "帮我过滤线粒体比例超过15%的细胞，用分辨率0.8聚类"
-       - "做GO和KEGG富集分析，生成UMAP图和火山图"
-    3. 点击「解析需求」查看AI生成的参数
-    4. 确认无误后点击「一键执行分析」
-    """)
-    
-    # 示例需求按钮
-    st.markdown("### 示例需求")
-    example_col1, example_col2, example_col3 = st.columns(3)
-    
-    with example_col1:
-        if st.button("💡 基础分析示例"):
-            st.session_state.example_requirement = "帮我做一个基础的单细胞分析，用默认参数"
-            st.success("已复制示例需求，请前往AI自然语言分析页面")
-    
-    with example_col2:
-        if st.button("🎯 严格质控示例"):
-            st.session_state.example_requirement = "过滤线粒体比例超过10%的细胞，最少200个基因，用分辨率0.5聚类"
-            st.success("已复制示例需求，请前往AI自然语言分析页面")
-    
-    with example_col3:
-        if st.button("📊 富集分析示例"):
-            st.session_state.example_requirement = "做GO和KEGG富集分析，生成UMAP图、火山图和气泡图"
-            st.success("已复制示例需求，请前往AI自然语言分析页面")
-    
-    st.markdown("---")
-    
-    # 技术栈介绍
-    st.markdown("## 🛠️ 技术栈")
-    tech_col1, tech_col2 = st.columns(2)
+    tech_col1, tech_col2, tech_col3 = st.columns(3)
     
     with tech_col1:
-        st.markdown("### 核心库")
-        st.markdown("- **Streamlit 1.30+**: 低代码UI框架")
-        st.markdown("- **Scanpy 1.10+**: 单细胞分析金标准")
-        st.markdown("- **Squidpy 1.4+**: 空间转录组分析")
-        st.markdown("- **GSEApy**: 基因富集分析")
+        st.markdown("### 🧬 核心库")
+        st.markdown("""
+        - **Scanpy**: 单细胞分析
+        - **Squidpy**: 空间转录组
+        - **GSEApy**: 基因富集
+        """)
     
     with tech_col2:
-        st.markdown("### 可视化库")
-        st.markdown("- **Matplotlib**: 基础图表")
-        st.markdown("- **Seaborn**: 统计可视化")
-        st.markdown("- **Plotly**: 交互式图表")
+        st.markdown("### 📊 可视化")
+        st.markdown("""
+        - **Plotly**: 交互式图表
+        - **Matplotlib**: 基础图表
+        - **Seaborn**: 统计可视化
+        """)
+    
+    with tech_col3:
+        st.markdown("### 🔧 技术")
+        st.markdown("""
+        - **Streamlit**: UI框架
+        - **本地运行**: 数据安全
+        - **开源免费**: 科研友好
+        """)
     
     st.markdown("---")
     
@@ -136,11 +195,19 @@ def show():
     **注意事项**：
     - 本工具仅供科研使用，不用于临床诊断
     - 所有分析在本地完成，无数据上传到云端
-    - 大样本数据可能需要较多内存，请确保电脑配置足够
+    - 大样本数据可能需要较多内存
     """)
-    
-    # 下一步按钮
-    st.markdown("---")
-    if st.button("🏠 开始使用 - 前往数据导入页面", type="primary", use_container_width=True):
-        st.session_state.page = "数据导入"
-        st.rerun()
+
+
+# 页面映射函数 - 将卡片名称映射到实际页面
+def get_page_mapping(card_name):
+    """将入口卡片名称映射到实际页面名称"""
+    mapping = {
+        "首页": "首页",
+        "数据管理": "数据导入",
+        "分析工具": "分析流程配置",  # 可扩展为显示选择器
+        "结果查看": "结果可视化",
+        "导出": "结果导出",
+        "帮助": "帮助文档"
+    }
+    return mapping.get(card_name, card_name)

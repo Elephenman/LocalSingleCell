@@ -2,9 +2,27 @@
 headless = true
 enableCORS = false
 enableXsrfProtection = false
+port = 8501
+address = "0.0.0.0"
+maxUploadSize = 200
+maxMessageSize = 200
 
 [client]
-showErrorDetails = false
+showErrorDetails = true
+toolbarMode = "minimal"
 
 [browser]
 gatherUsageStats = false
+serverAddress = ""
+serverPort = 8501
+
+[theme]
+primaryColor = "#134273"
+backgroundColor = "#f8f9fa"
+secondaryBackgroundColor = "#e9ecef"
+textColor = "#2c3e50"
+font = "sans serif"
+
+[runner]
+magicEnabled = true
+fastReruns = true

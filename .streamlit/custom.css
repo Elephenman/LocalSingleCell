@@ -1,0 +1,528 @@
+/* =============================================================================
+   LocalSingleCell 自定义样式 - NCBI蓝色主题 (#134273)
+   ============================================================================= */
+
+/* 全局样式 */
+:root {
+    /* NCBI蓝色主题色 */
+    --primary-color: #134273;
+    --primary-light: #1a5a96;
+    --primary-dark: #0d2e54;
+    --accent-color: #2d8cf0;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    
+    /* 背景色 */
+    --bg-main: #f8f9fa;
+    --bg-card: #ffffff;
+    --bg-sidebar: #ffffff;
+    --bg-input: #ffffff;
+    
+    /* 文字颜色 */
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-muted: #adb5bd;
+    
+    /* 边框 */
+    --border-color: #e9ecef;
+    --border-radius: 8px;
+    
+    /* 阴影 */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+}
+
+/* 暗色主题 */
+[data-theme="dark"] {
+    --bg-main: #1a1a2e;
+    --bg-card: #16213e;
+    --bg-sidebar: #1a1a2e;
+    --bg-input: #0f3460;
+    --text-primary: #e8e8e8;
+    --text-secondary: #a0a0a0;
+    --border-color: #2d3a4f;
+}
+
+/* Streamlit基础元素美化 */
+.stApp {
+    background-color: var(--bg-main);
+}
+
+/* 标题样式 */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--primary-color) !important;
+    font-weight: 600 !important;
+}
+
+h1 {
+    font-size: 2.2rem !important;
+    margin-bottom: 1rem !important;
+}
+
+h2 {
+    font-size: 1.75rem !important;
+    margin-top: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+}
+
+h3 {
+    font-size: 1.4rem !important;
+}
+
+/* 导航标签 */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px;
+    background-color: var(--bg-card);
+    padding: 8px 12px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+}
+
+.stTabs [data-baseweb="tab"] {
+    padding: 12px 24px;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.stTabs [aria-selected="true"] {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light)) !important;
+    color: white !important;
+    box-shadow: var(--shadow-md);
+}
+
+.stTabs [data-baseweb="tab"]:hover:not([aria-selected="true"]) {
+    background-color: rgba(19, 66, 115, 0.1);
+}
+
+/* 按钮样式 */
+div.stButton > button {
+    border-radius: var(--border-radius);
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+div.stButton > button[kind="primary"] {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    color: white;
+}
+
+div.stButton > button[kind="primary"]:hover {
+    background: linear-gradient(135deg, var(--primary-light), var(--primary-color));
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+div.stButton > button[kind="secondary"] {
+    background-color: var(--bg-card);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color) !important;
+}
+
+div.stButton > button[kind="secondary"]:hover {
+    background-color: rgba(19, 66, 115, 0.1);
+    box-shadow: var(--shadow-md);
+}
+
+/* 卡片样式 */
+div.stExpander {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+div.stExpander > details > summary {
+    background-color: var(--bg-card);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+div.stExpander > details[open] > summary {
+    border-bottom-color: var(--primary-color);
+}
+
+div.stExpander > details > div {
+    padding: 16px;
+}
+
+/* 输入框样式 */
+div.stTextInput > div > div > input,
+div.stNumberInput > div > div > input,
+div.stTextArea > div > div > textarea {
+    background-color: var(--bg-input);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 12px 16px;
+    transition: all 0.2s ease;
+}
+
+div.stTextInput > div > div > input:focus,
+div.stNumberInput > div > div > input:focus,
+div.stTextArea > div > div > textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(19, 66, 115, 0.15);
+    outline: none;
+}
+
+/* 下拉选择框 */
+div[data-baseweb="select"] > div {
+    background-color: var(--bg-input);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+div[data-baseweb="select"] > div:focus-within {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(19, 66, 115, 0.15);
+}
+
+/* 复选框 */
+div.stCheckbox > label > div:first-child {
+    border-radius: 4px;
+}
+
+div.stCheckbox > label > input:checked + div {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* 滑块 */
+div.stSlider [data-baseweb="slider"] {
+    color: var(--primary-color);
+}
+
+div.stSlider [role="slider"] {
+    background-color: var(--primary-color);
+}
+
+/* 进度条 */
+div.stProgress > div > div > div {
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+}
+
+/* 消息提示 */
+div.stSuccess {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-left: 4px solid var(--success-color);
+    border-radius: 4px;
+    padding: 12px 16px;
+}
+
+div.stInfo {
+    background-color: rgba(23, 162, 184, 0.1);
+    border-left: 4px solid var(--info-color);
+    border-radius: 4px;
+    padding: 12px 16px;
+}
+
+div.stWarning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid var(--warning-color);
+    border-radius: 4px;
+    padding: 12px 16px;
+}
+
+div.stError {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-left: 4px solid var(--danger-color);
+    border-radius: 4px;
+    padding: 12px 16px;
+}
+
+/* 指标卡片 */
+div[data-testid="metric-container"] {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+}
+
+div[data-testid="metric-container"]:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary-color);
+}
+
+/* 数据框/表格 */
+div[data-testid="stDataFrame"] {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+/* 分隔线 */
+hr {
+    border-top: 2px solid var(--primary-color);
+    opacity: 0.3;
+    margin: 24px 0;
+}
+
+/* 居中和侧边栏 */
+div[data-testid="stVerticalBlock"] {
+    gap: 1rem;
+}
+
+/* 侧边栏样式 */
+section[data-testid="stSidebar"] {
+    background-color: var(--bg-sidebar);
+    border-right: 1px solid var(--border-color);
+}
+
+section[data-testid="stSidebar"] > div {
+    padding: 16px;
+}
+
+/* 旋转加载动画 */
+div.stSpinner {
+    color: var(--primary-color);
+}
+
+/* 徽章/标签 */
+span[data-testid="stBadge"] {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+}
+
+/* 图标大小调整 */
+svg {
+    max-width: 1.25em;
+    max-height: 1.25em;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-main);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 1.75rem !important;
+    }
+    
+    h2 {
+        font-size: 1.4rem !important;
+    }
+    
+    .stButton > button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* 工具提示 */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 200px;
+    background-color: var(--primary-dark);
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px 12px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 12px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+div[data-testid="stVerticalBlock"] > div {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* =============================================================================
+   主页入口卡片样式 - 6个核心入口
+   ============================================================================= */
+
+/* 卡片容器 */
+.entry-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: var(--border-radius);
+    padding: 28px 24px;
+    color: white;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    border: none;
+    min-height: 180px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 卡片悬停效果 */
+.entry-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* 卡片悬停时的光晕效果 */
+.entry-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.entry-card:hover::after {
+    opacity: 1;
+}
+
+/* 卡片图标 */
+.entry-card-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+/* 卡片标题 */
+.entry-card h3 {
+    color: white !important;
+    margin-bottom: 10px;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+}
+
+/* 卡片描述 */
+.entry-card p {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 网格布局 - 响应式 */
+.entry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px 0;
+}
+
+/* 响应式 - 平板 */
+@media (max-width: 992px) {
+    .entry-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* 响应式 - 手机 */
+@media (max-width: 576px) {
+    .entry-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .entry-card {
+        padding: 24px 20px;
+        min-height: 160px;
+    }
+    
+    .entry-card-icon {
+        font-size: 40px;
+    }
+}
+
+/* 卡片内按钮 */
+.entry-card-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    padding: 10px 20px;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    margin-top: 16px;
+    width: 100%;
+}
+
+.entry-card-button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: white;
+}
+
+/* 快速开始折叠面板样式 */
+.streamlit-expanderHeader {
+    background: var(--bg-card) !important;
+    border-radius: var(--border-radius) !important;
+    font-weight: 600 !important;
+    color: var(--primary-color) !important;
+}
+
+/* 指标卡片增强 */
+[data-testid="metric-container"] {
+    background: var(--bg-card);
+    border-radius: var(--border-radius);
+    padding: 16px 20px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s ease;
+}
+
+[data-testid="metric-container"]:hover {
+    border-color: var(--primary-color);
+    box-shadow: var(--shadow-md);
+}
