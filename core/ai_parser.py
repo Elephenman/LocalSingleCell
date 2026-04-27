@@ -71,7 +71,7 @@ class AIParser:
                 'max_ribo_ratio': 50
             },
             'normalization': {
-                'method': 'scanpy_standard',
+                'method': 'scanpy',  # 与 config.yaml 保持一致（原为 'scanpy_standard'，已修正）
                 'target_sum': 10000,
                 'select_highly_variable': True,
                 'highly_variable_method': 'seurat_v3',
@@ -94,12 +94,12 @@ class AIParser:
                 'algorithm': 'leiden',
                 'resolution': 0.5
             },
-            'differential_expression': {
-                'run_de': True,
+            'differential': {  # 与 config.yaml 保持一致（原为 'differential_expression'，已修正）
+                'apply': True,
                 'method': 'wilcoxon',
                 'p_adjust_cutoff': 0.05,
                 'log2fc_cutoff': 0.25,
-                'min_expressed_fraction': 0.25
+                'min_pct': 0.25
             }
         }
         
@@ -187,17 +187,17 @@ class AIParser:
         
         # 标记基因/差异基因
         if '标记基因' in user_input or '差异基因' in user_input:
-            config['differential_expression']['run_de'] = True
+            config['differential']['apply'] = True
         
         # p值阈值
         pvalue_match = re.search(r'p[-\s]?value[<≤]?(\d+(?:\.\d+)?)', user_input, re.IGNORECASE)
         if pvalue_match:
-            config['differential_expression']['p_adjust_cutoff'] = float(pvalue_match.group(1))
+            config['differential']['p_adjust_cutoff'] = float(pvalue_match.group(1))
         
         # log2FC阈值
         fc_match = re.search(r'log2fc[≥>]?(\d+(?:\.\d+)?)', user_input, re.IGNORECASE)
         if fc_match:
-            config['differential_expression']['log2fc_cutoff'] = float(fc_match.group(1))
+            config['differential']['log2fc_cutoff'] = float(fc_match.group(1))
         
         return config
     
@@ -294,7 +294,7 @@ class AIParser:
                 return False, "聚类分辨率应在0.1-2.0之间"
             
             # 验证差异表达参数
-            de = config.get('differential_expression', {})
+            de = config.get('differential', {})  # 与统一后的 key 保持一致
             if de.get('p_adjust_cutoff', 0.05) < 0.001 or de.get('p_adjust_cutoff', 0.05) > 0.1:
                 return False, "p值阈值应在0.001-0.1之间"
             

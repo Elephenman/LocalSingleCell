@@ -340,10 +340,9 @@ def execute_ai_analysis(ai_parser: AIParser, data_type: str):
                     progress_callback=lambda p, s: (progress_bar.progress(p), status_text.text(s))
                 )
             
-            # 保存结果 - pipeline返回的是 (adata, result) 元组
-            adata, analysis_result = result
-            st.session_state['anndata_obj'] = adata
-            st.session_state['analysis_result'] = analysis_result
+            # 保存结果
+            st.session_state['anndata_obj'] = result['adata']
+            st.session_state['analysis_result'] = result
             st.session_state['is_analysis_done'] = True
             
             progress_bar.progress(100)

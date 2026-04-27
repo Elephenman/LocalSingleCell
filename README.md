@@ -24,7 +24,7 @@
 
 ### 🛠️ 技术栈
 - **Python 3.10+**
-- **Streamlit 1.32+**：低代码UI框架
+- **Streamlit 1.30+**：低代码UI框架
 - **Scanpy 1.10+**：单细胞分析金标准
 - **Squidpy 1.4+**：空间转录组分析
 - **GSEApy**：富集分析
@@ -34,7 +34,7 @@
 
 ### 1. 环境要求
 - Windows 10/11 或 Linux/macOS
-- Python 3.10 - 3.12
+- Python 3.10 或更高版本
 - 至少8GB RAM（推荐16GB+）
 
 ### 2. 安装依赖
@@ -69,65 +69,41 @@ streamlit run app.py --server.headless true
 4. 确认参数后点击「一键执行分析」
 
 ## 项目结构
-
 ```
 LocalSingleCell/
 ├── app.py                      # 主入口文件
 ├── requirements.txt            # 依赖包列表
-├── config.yaml                 # 全局配置文件
-├── README.md                   # 项目说明文档
-│
-├── core/                       # 核心分析模块
-│   ├── __init__.py             # 模块导出
-│   ├── data_loader.py          # 数据加载
-│   ├── qc_filter.py            # 质控过滤
-│   ├── analysis_pipeline.py    # 单细胞分析流程
-│   ├── spatial_pipeline.py     # 空间分析流程
-│   ├── spatial_loader.py       # 空间数据加载
-│   ├── visualization.py        # 可视化
+├── config.yaml                # 全局配置文件
+├── README.md                  # 项目说明文档
+├── core/                      # 核心分析模块
+│   ├── data_loader.py         # 数据加载
+│   ├── qc_filter.py           # 质控过滤
+│   ├── analysis_pipeline.py   # 单细胞分析流程
+│   ├── spatial_pipeline.py    # 空间分析流程
+│   ├── visualization.py       # 可视化
 │   ├── spatial_visualization.py # 空间可视化
-│   ├── enrichment.py           # 富集分析
-│   ├── ai_parser.py            # AI需求解析器
-│   ├── sra_processor.py        # SRA数据处理
-│   ├── downsampling.py         # 降采样工具
-│   └── config/                 # 配置管理
-│       ├── param_manager.py    # 参数管理器
-│       └── parameter_schema.py # 参数模式定义
-│
-├── ui/                         # UI界面模块
-│   ├── __init__.py             # 模块导出
-│   ├── sidebar.py              # 侧边栏导航
-│   ├── home_page.py            # 首页
-│   ├── data_import_page.py     # 数据导入页面
+│   ├── enrichment.py          # 富集分析
+│   ├── ai_parser.py           # AI需求解析器
+│   └── sra_processor.py      # SRA数据处理
+├── ui/                        # UI界面模块
+│   ├── sidebar.py             # 侧边栏导航
+│   ├── data_import_page.py    # 数据导入页面
 │   ├── pipeline_config_page.py # 分析配置页面
 │   ├── spatial_pipeline_config_page.py # 空间配置页面
-│   ├── visualization_page.py   # 可视化页面
+│   ├── visualization_page.py  # 可视化页面
 │   ├── spatial_visualization_page.py # 空间可视化页面
-│   ├── enrichment_page.py      # 富集分析页面
-│   ├── ai_analysis_page.py     # AI分析页面
-│   ├── result_export_page.py   # 结果导出页面
-│   ├── help_page.py            # 帮助页面
-│   └── components/             # 可复用UI组件
-│       ├── navbar.py           # 导航栏组件
-│       └── param_editor.py     # 参数编辑器组件
-│
-├── utils/                      # 工具函数模块
-│   ├── config_utils.py         # 配置工具
-│   ├── logger_utils.py         # 日志工具
-│   ├── validator_utils.py      # 验证工具
-│   ├── exception_utils.py      # 异常处理
-│   ├── exceptions.py           # 自定义异常类
-│   ├── performance_utils.py    # 性能监控
-│   ├── security_utils.py       # 安全工具
-│   └── visual_utils.py         # 可视化工具
-│
-├── tests/                      # 单元测试
-│   ├── test_core/              # 核心模块测试
-│   └── test_utils/             # 工具模块测试
-│
-├── docs/                       # 文档目录
-├── logs/                       # 日志目录
-└── temp/                       # 临时文件目录
+│   ├── enrichment_page.py     # 富集分析页面
+│   ├── ai_analysis_page.py    # AI分析页面
+│   ├── result_export_page.py  # 结果导出页面
+│   └── help_page.py           # 帮助页面
+├── utils/                     # 工具函数模块
+│   ├── config_utils.py        # 配置工具
+│   ├── logger_utils.py        # 日志工具
+│   ├── validator_utils.py     # 验证工具
+│   ├── exception_utils.py     # 异常处理
+│   └── visual_utils.py        # 可视化工具
+├── logs/                      # 日志目录
+└── temp/                      # 临时文件目录
 ```
 
 ## 核心红线规则
@@ -138,12 +114,6 @@ LocalSingleCell/
 5. **中文适配**：所有界面和提示为中文
 
 ## 版本历史
-
-### v3.1.0 (2026-04-10)
-- 🧹 代码审查优化，清理临时文件
-- 🔧 重命名异常类避免与内置冲突
-- 📦 补充模块级导出，优化导入体验
-- 🗑️ 删除冗余的 ui/pages 目录，统一架构
 
 ### v3.0.0 (2026-04-01)
 - ✨ 新增AI自然语言分析功能

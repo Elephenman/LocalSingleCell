@@ -9,7 +9,7 @@ def show():
     空间转录组结果可视化页面
     """
     # 页面前置校验
-    if not st.session_state.get('is_analysis_done', False) or not st.session_state.get('is_spatial_data', False):
+    if not st.session_state.is_analysis_done or not st.session_state.get('is_spatial_data', False):
         st.warning("请先完成空间转录组分析流程")
         return
     

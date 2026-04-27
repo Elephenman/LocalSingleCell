@@ -45,90 +45,90 @@ def plot_qc_violin(adata, save_path=None):
 def plot_umap(adata, color='leiden', save_path=None):
     """
     绘制UMAP降维图
-    
+
     Args:
         adata: AnnData对象
         color: 着色依据
         save_path: 保存路径
-    
+
     Returns:
         matplotlib Figure对象
     """
-    sc.pl.umap(adata, color=color, show=False)
-    fig = plt.gcf()
-    
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sc.pl.umap(adata, color=color, show=False, ax=ax)
+
     if save_path:
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    
+        fig.savefig(save_path, dpi=300, bbox_inches='tight')
+
     return fig
 
 
 def plot_tsne(adata, color='leiden', save_path=None):
     """
     绘制tSNE降维图
-    
+
     Args:
         adata: AnnData对象
         color: 着色依据
         save_path: 保存路径
-    
+
     Returns:
         matplotlib Figure对象
     """
-    sc.pl.tsne(adata, color=color, show=False)
-    fig = plt.gcf()
-    
+    fig, ax = plt.subplots(figsize=(8, 6))
+    sc.pl.tsne(adata, color=color, show=False, ax=ax)
+
     if save_path:
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    
+        fig.savefig(save_path, dpi=300, bbox_inches='tight')
+
     return fig
 
 
 def plot_gene_expression(adata, gene, save_path=None):
     """
     绘制基因表达散点图
-    
+
     Args:
         adata: AnnData对象
         gene: 基因名
         save_path: 保存路径
-    
+
     Returns:
         matplotlib Figure对象
     """
+    fig, ax = plt.subplots(figsize=(8, 6))
     if 'X_umap' in adata.obsm:
-        sc.pl.umap(adata, color=gene, show=False)
+        sc.pl.umap(adata, color=gene, show=False, ax=ax)
     elif 'X_tsne' in adata.obsm:
-        sc.pl.tsne(adata, color=gene, show=False)
+        sc.pl.tsne(adata, color=gene, show=False, ax=ax)
     else:
-        sc.pl.pca(adata, color=gene, show=False)
-    
-    fig = plt.gcf()
-    
+        sc.pl.pca(adata, color=gene, show=False, ax=ax)
+
     if save_path:
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    
+        fig.savefig(save_path, dpi=300, bbox_inches='tight')
+
     return fig
 
 
 def plot_marker_genes(adata, markers, save_path=None):
     """
     绘制标记基因热图
-    
+
     Args:
         adata: AnnData对象
         markers: 标记基因列表
         save_path: 保存路径
-    
+
     Returns:
         matplotlib Figure对象
     """
     sc.pl.heatmap(adata, var_names=markers, groupby='leiden', show=False)
     fig = plt.gcf()
-    
+    # heatmap 返回 axes dict，无法直接传入 ax，使用 gcf() 获取当前图
+
     if save_path:
-        plt.savefig(save_path, dpi=300, bbox_inches='tight')
-    
+        fig.savefig(save_path, dpi=300, bbox_inches='tight')
+
     return fig
 
 

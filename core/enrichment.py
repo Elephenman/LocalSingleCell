@@ -66,29 +66,29 @@ def run_enrichment(gene_list, organism='human', databases=['GO_BP', 'KEGG'], p_a
 def get_marker_genes(adata, cluster, top_n=10):
     """
     获取指定聚类的标记基因
-
+    
     Args:
         adata: AnnData对象
         cluster: 聚类编号
         top_n: 前N个标记基因
-
+    
     Returns:
         list: 标记基因列表
     """
     try:
         # 提取指定聚类的标记基因
         cluster_key = 'leiden'
-
+        
         # 使用scanpy的内置函数获取标记基因
         import scanpy as sc
         marker_genes = sc.get.rank_genes_groups_df(adata, group=str(cluster))
-
+        
         # 过滤显著差异基因
         significant_genes = marker_genes[marker_genes['padj'] < 0.05]
-
+        
         # 按log2FC排序，取前top_n个
         top_genes = significant_genes.sort_values('logfoldchanges', ascending=False).head(top_n)
-
+        
         return top_genes['names'].tolist()
     except Exception as e:
         raise Exception(f"获取标记基因失败: {str(e)}")

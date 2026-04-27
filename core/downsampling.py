@@ -51,27 +51,28 @@ def downsample_cells(adata, target_cells=5000, random_seed=42):
     return adata[indices, :].copy()
 
 
-def downsample_genes(adata, target_genes=10000, by_expression=True):
+def downsample_genes(adata, target_genes=10000, by_expression=True, random_seed=42):
     """
     基因数降采样
-    
+
     Args:
         adata: AnnData对象
         target_genes: 目标基因数
         by_expression: 是否按表达量筛选
-        
+        random_seed: 随机种子（仅 by_expression=False 时使用）
+
     Returns:
         AnnData对象，降采样后的结果
     """
     if adata.n_vars <= target_genes:
         return adata
-    
+
     if by_expression:
         gene_counts = np.array(adata.X.sum(axis=0)).flatten()
         top_indices = np.argsort(gene_counts)[::-1][:target_genes]
         return adata[:, top_indices].copy()
     else:
-        np.random.seed(42)
+        np.random.seed(random_seed)  # 使用传入参数，不再硬编码 42
         indices = np.random.choice(adata.n_vars, target_genes, replace=False)
         return adata[:, indices].copy()
 

@@ -10,7 +10,7 @@ def show():
     基因富集分析页面
     """
     # 页面前置校验
-    if not st.session_state.get('is_analysis_done', False):
+    if not st.session_state.is_analysis_done:
         st.warning("请先完成分析流程")
         return
     

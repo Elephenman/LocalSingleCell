@@ -2,34 +2,26 @@ import scanpy as sc
 import squidpy as sq
 import numpy as np
 from core import qc_filter
-from typing import Callable, Optional
 
 
-def run_spatial_pipeline(adata, config, progress_callback: Optional[Callable[[int, str], None]] = None):
+def run_spatial_pipeline(adata, config):
     """
     运行空间转录组分析全流程
-
+    
     Args:
         adata: AnnData对象
         config: 分析参数配置
-        progress_callback: 进度回调函数，接收 (progress_percent, status_message)
-
+    
     Returns:
         AnnData对象，包含分析结果
         dict: 分析结果摘要
     """
     result = {}
-
-    # 定义进度更新辅助函数
-    def update_progress(percent, message):
-        if progress_callback:
-            progress_callback(percent, message)
-
+    
     # 设置随机种子
     np.random.seed(config['random_seed'])
-
-    # 1. 基础质控（与单细胞分析相同）(0-15%)
-    update_progress(0, "正在进行空间数据质控...")
+    
+    # 1. 基础质控（与单细胞分析相同）
     adata = qc_filter.calculate_qc_metrics(adata)
     adata = qc_filter.calculate_mitochondrial_percent(
         adata, 
@@ -70,52 +62,42 @@ def run_spatial_pipeline(adata, config, progress_callback: Optional[Callable[[in
         'n_cells': adata.n_obs,
         'n_genes': adata.n_vars
     }
-    update_progress(15, f"质控完成：{result['post_qc']['n_cells']}个细胞")
-
-    # 2. 归一化 (15-30%)
-    update_progress(20, "正在进行归一化...")
+    
+    # 2. 归一化
     if config['normalization']['method'] == 'scanpy':
         sc.pp.normalize_total(
-            adata,
+            adata, 
             target_sum=config['normalization']['target_sum']
         )
         sc.pp.log1p(adata)
     elif config['normalization']['method'] == 'cpm':
         sc.pp.normalize_total(adata, target_sum=1e6)
-    update_progress(30, "归一化完成")
-
-    # 3. 高变基因筛选 (30-45%)
-    update_progress(35, "正在筛选高变基因...")
+    
+    # 3. 高变基因筛选
     if config['normalization']['hvg']['apply']:
         sc.pp.highly_variable_genes(
             adata,
             n_top_genes=config['normalization']['hvg']['n_top_genes'],
             flavor=config['normalization']['hvg']['method']
         )
-    update_progress(45, "高变基因筛选完成")
-
-    # 4. 数据标准化 (45-55%)
-    update_progress(50, "正在进行数据标准化...")
+    
+    # 4. 数据标准化
     if config['normalization']['scaling']['apply']:
         sc.pp.scale(
             adata,
             max_value=config['normalization']['scaling']['max_value']
         )
-    update_progress(55, "数据标准化完成")
-
-    # 5. 降维分析 (55-75%)
-    update_progress(60, "正在进行PCA降维...")
+    
+    # 5. 降维分析
     # PCA
     sc.tl.pca(
         adata,
         n_comps=config['dimension_reduction']['pca']['n_comps'],
         use_highly_variable=config['dimension_reduction']['pca']['use_hvg']
     )
-    update_progress(65, "PCA降维完成")
-
+    
     # UMAP
     if config['dimension_reduction']['umap']['apply']:
-        update_progress(68, "正在进行UMAP降维...")
         sc.pp.neighbors(
             adata,
             n_pcs=config['clustering']['n_pcs'],
@@ -126,20 +108,15 @@ def run_spatial_pipeline(adata, config, progress_callback: Optional[Callable[[in
             n_neighbors=config['dimension_reduction']['umap']['n_neighbors'],
             min_dist=config['dimension_reduction']['umap']['min_dist']
         )
-        update_progress(72, "UMAP降维完成")
-
-    # 6. 细胞聚类 (75-85%)
-    update_progress(78, "正在进行细胞聚类...")
+    
+    # 6. 细胞聚类
     sc.tl.leiden(
         adata,
         resolution=config['clustering']['resolution']
     )
-    n_clusters = len(adata.obs['leiden'].unique())
-    update_progress(85, f"聚类完成：发现{n_clusters}个细胞亚群")
-
-    # 7. 空间专属分析 (85-95%)
+    
+    # 7. 空间专属分析
     if 'spatial' in config and config['spatial']['apply']:
-        update_progress(87, "正在进行空间邻居图构建...")
         # 空间邻居图构建
         sq.gr.spatial_neighbors(
             adata,
@@ -147,42 +124,39 @@ def run_spatial_pipeline(adata, config, progress_callback: Optional[Callable[[in
             n_rings=config['spatial']['n_rings'],
             delaunay=config['spatial']['delaunay']
         )
-        update_progress(90, "空间邻居图构建完成")
-
+        
         # 空间可变基因分析
         if config['spatial']['spatial_variable_genes']['apply']:
-            update_progress(91, "正在进行空间可变基因分析...")
             # 获取高变基因列表
             genes = None
             if config['normalization']['hvg']['apply'] and 'highly_variable' in adata.var:
                 genes = adata.var_names[adata.var['highly_variable']].tolist()
-
+            
             sq.gr.spatial_autocorr(
                 adata,
                 mode=config['spatial']['spatial_variable_genes']['mode'],
                 genes=genes
             )
-            update_progress(93, "空间可变基因分析完成")
-
+        
         # 共定位分析
         if config['spatial']['colocalization']['apply']:
-            update_progress(94, "正在进行共定位分析...")
             sq.gr.co_occurrence(
                 adata,
                 cluster_key='leiden',
                 n_splits=config['spatial']['colocalization']['n_splits']
             )
-            update_progress(95, "共定位分析完成")
-
+        
         # 配体-受体分析
         if config['spatial']['ligand_receptor']['apply']:
-            # TODO: 配体-受体分析需要外部数据库支持，功能开发中
+            # 配体-受体分析需要外部数据库（CellChat / CellPhoneDB），该功能正在开发中
+            # 当前版本暂不支持，如需使用请关注后续版本更新
             import logging
-            logging.warning("配体-受体分析功能开发中，暂跳过")
-
-    # 8. 差异基因分析 (95-100%)
+            logging.getLogger(__name__).warning(
+                "配体-受体分析功能暂未实现，将在 Phase 4.0 中集成 CellChat / CellPhoneDB 数据库。"
+            )
+    
+    # 8. 差异基因分析
     if config['differential']['apply']:
-        update_progress(96, "正在进行差异基因分析...")
         sc.tl.rank_genes_groups(
             adata,
             groupby='leiden',
@@ -190,9 +164,7 @@ def run_spatial_pipeline(adata, config, progress_callback: Optional[Callable[[in
             n_genes=200,
             min_pct=config['differential']['min_pct']
         )
-        update_progress(100, "差异基因分析完成")
-
-    update_progress(100, "空间转录组分析流程全部完成！")
+    
     return adata, result
 
 

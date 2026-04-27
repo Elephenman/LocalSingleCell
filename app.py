@@ -10,26 +10,10 @@ st.set_page_config(
     layout="wide"
 )
 
-# ============================================================================
-# Phase 1 UI 美化: 加载自定义 CSS
-# 主色调: #134273 (NCBI Blue)
-# ============================================================================
-
-def load_custom_css():
-    """加载自定义CSS样式文件"""
-    css_file = os.path.join(os.path.dirname(__file__), '.streamlit', 'custom.css')
-    if os.path.exists(css_file):
-        with open(css_file, 'r', encoding='utf-8') as f:
-            css_content = f.read()
-        # 使用 unsafe_allow_html 允许自定义样式
-        st.markdown(f'<style>{css_content}</style>', unsafe_allow_html=True)
-
-# 页面配置后立即加载CSS（确保样式在页面渲染前生效）
-load_custom_css()
-
-# 创建temp和logs目录
-os.makedirs("temp", exist_ok=True)
-os.makedirs("logs", exist_ok=True)
+# 创建temp和logs目录（使用绝对路径，避免因工作目录不同而创建到错误位置）
+_BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+os.makedirs(os.path.join(_BASE_DIR, "temp"), exist_ok=True)
+os.makedirs(os.path.join(_BASE_DIR, "logs"), exist_ok=True)
 
 try:
     # 导入基础模块
@@ -142,23 +126,6 @@ try:
     
     # 侧边栏导航
     page = sidebar()
-    
-    # 处理从首页卡片点击的页面跳转
-    # 卡片名称到实际页面名称的映射
-    card_to_page_mapping = {
-        "首页": "首页",
-        "数据导入": "数据导入",
-        "分析工具": "分析流程配置",  # 分析工具卡片跳转到分析流程配置
-        "结果查看": "结果可视化",    # 结果查看卡片跳转到结果可视化
-        "结果导出": "结果导出",
-        "帮助文档": "帮助文档"
-    }
-    
-    # 如果session_state中有page，说明是从卡片点击跳转的
-    if 'page' in st.session_state:
-        card_page = st.session_state.pop('page')
-        # 使用映射转换为实际页面名称
-        page = card_to_page_mapping.get(card_page, card_page)
     
     # 页面路由
     if page == "首页":

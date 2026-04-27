@@ -4,7 +4,6 @@ import tempfile
 import zipfile
 import io
 import pandas as pd
-import matplotlib.pyplot as plt
 from utils import exception_utils
 
 
@@ -13,7 +12,7 @@ def show():
     结果导出页面
     """
     # 页面前置校验
-    if not st.session_state.get('is_analysis_done', False):
+    if not st.session_state.is_analysis_done:
         st.warning("请先完成分析流程")
         return
     

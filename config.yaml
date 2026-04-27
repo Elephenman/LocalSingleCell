@@ -15,25 +15,17 @@ performance:
     max_cells: 10000        # 最大细胞数，超过则提示降采样
     max_genes: 20000        # 最大基因数，超过则提示降采样
     suggest_only: false      # false=自动执行降采样，true=仅给出建议
-
+  
   # 内存优化设置
   memory:
     gc_threshold_percent: 80  # 内存使用率阈值（%），超过时启动GC
     enable_cache: true        # 是否启用缓存机制
     cache_dir: "temp/cache"   # 缓存目录
-
+  
   # 并行处理设置
   parallel:
     enabled: true
     n_jobs: -1                # -1=使用所有CPU核心
-
-  # 性能监控设置
-  monitoring:
-    enabled: true             # 是否启用性能监控
-    log_memory: true          # 是否记录内存使用
-    log_timing: true          # 是否记录耗时
-    alert_memory_percent: 85  # 内存使用告警阈值（%）
-    output_dir: "logs/performance"  # 性能日志输出目录
 
 # =============================================================================
 # 日志配置

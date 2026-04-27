@@ -186,3 +186,6 @@ def process_sra(sra_id, temp_dir, genome_index=None):
         return adata
     except Exception as e:
         raise Exception(f"处理SRA数据失败: {str(e)}")
+    finally:
+        # 清理临时文件（可选）
+        pass
